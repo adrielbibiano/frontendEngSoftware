@@ -3,59 +3,64 @@ import { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Trash2, PlusCircle, School } from 'lucide-react';
 
-// Definição dos Tipos (TypeScript)
+// Definição dos Tipos
 interface Municipio {
   id: number;
   nome: string;
+}
+
+interface Destino {
+  id: number;
+  tipo: string;
 }
 
 interface Escola {
   id: number;
   nome: string;
   tipo: string;
-  municipio: Municipio; // O backend traz o objeto municipio dentro da escola
+  municipio: Municipio;
 }
 
 export function GerenciarEscolas() {
-  // Estados para armazenar os dados
+  // Estados de Dados (Listas)
   const [escolas, setEscolas] = useState<Escola[]>([]);
   const [municipios, setMunicipios] = useState<Municipio[]>([]);
+  const [destinos, setDestinos] = useState<Destino[]>([]); // Novo estado para destinos
   
   // Estados do Formulário
   const [nome, setNome] = useState('');
   const [tipo, setTipo] = useState('Pública');
   const [idMunicipio, setIdMunicipio] = useState('');
+  const [idDestino, setIdDestino] = useState(''); // Novo estado para o select
 
   // Carregar dados ao abrir a página
   useEffect(() => {
-    carregarEscolas();
-    carregarMunicipios();
+    carregarDados();
   }, []);
 
-  async function carregarEscolas() {
+  async function carregarDados() {
     try {
-      const response = await api.get('/escolas');
-      setEscolas(response.data);
-    } catch (error) {
-      console.error("Erro ao buscar escolas", error);
-    }
-  }
+      // Busca todas as informações necessárias
+      const [resEscolas, resMunicipios, resDestinos] = await Promise.all([
+        api.get('/escolas'),
+        api.get('/municipios'),
+        api.get('/destinos')
+      ]);
 
-  async function carregarMunicipios() {
-    try {
-      const response = await api.get('/municipios');
-      setMunicipios(response.data);
+      setEscolas(resEscolas.data);
+      setMunicipios(resMunicipios.data);
+      setDestinos(resDestinos.data);
     } catch (error) {
-      console.error("Erro ao buscar municípios", error);
+      console.error("Erro ao carregar dados", error);
     }
   }
 
   // Função de CRIAR (Create)
   async function handleCadastro(e: React.FormEvent) {
-    e.preventDefault(); // Não recarregar a página
+    e.preventDefault();
 
-    if (!nome || !idMunicipio) {
-      alert("Preencha todos os campos!");
+    if (!nome || !idMunicipio || !idDestino) {
+      alert("Preencha todos os campos, incluindo o destino do lixo!");
       return;
     }
 
@@ -63,13 +68,19 @@ export function GerenciarEscolas() {
       await api.post('/escolas', {
         nome,
         tipo,
-        idMunicipio: Number(idMunicipio)
+        idMunicipio: Number(idMunicipio),
+        idDestino: Number(idDestino) // Enviando o destino escolhido
       });
       
-      // Limpar formulário e recarregar lista
+      // Limpar formulário
       setNome('');
       setIdMunicipio('');
-      carregarEscolas();
+      setIdDestino('');
+      
+      // Recarrega a lista para mostrar a nova escola
+      const res = await api.get('/escolas');
+      setEscolas(res.data);
+      
       alert('Escola cadastrada com sucesso!');
     } catch (error) {
       console.error(error);
@@ -82,17 +93,16 @@ export function GerenciarEscolas() {
     if (confirm("Tem certeza que deseja excluir esta escola?")) {
       try {
         await api.delete(`/escolas/${id}`);
-        // Remove da lista visualmente sem precisar ir no backend de novo
         setEscolas(escolas.filter(escola => escola.id !== id));
       } catch (error) {
-        alert("Erro ao excluir. Verifique se existem dados vinculados.");
+        alert("Erro ao excluir. Pode haver dados vinculados.");
       }
     }
   }
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
           <School /> Gestão de Escolas
         </h1>
@@ -100,10 +110,10 @@ export function GerenciarEscolas() {
         {/* --- FORMULÁRIO DE CADASTRO --- */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-xl font-semibold mb-4">Cadastrar Nova Escola</h2>
-          <form onSubmit={handleCadastro} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <form onSubmit={handleCadastro} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 align-bottom">
             
             {/* Input Nome */}
-            <div className="md:col-span-2">
+            <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-gray-700">Nome da Escola</label>
               <input
                 type="text"
@@ -127,7 +137,7 @@ export function GerenciarEscolas() {
               </select>
             </div>
 
-            {/* Select Município (Dinâmico) */}
+            {/* Select Município */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Município</label>
               <select
@@ -144,11 +154,28 @@ export function GerenciarEscolas() {
               </select>
             </div>
 
+            {/* NOVO: Select Destino do Lixo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Destino do Lixo</label>
+              <select
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                value={idDestino}
+                onChange={e => setIdDestino(e.target.value)}
+              >
+                <option value="">Selecione...</option>
+                {destinos.map(dest => (
+                  <option key={dest.id} value={dest.id}>
+                    {dest.tipo}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Botão Salvar */}
-            <div className="md:col-span-4 flex justify-end">
+            <div className="lg:col-span-5 flex justify-end mt-2">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2"
+                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 flex items-center gap-2 font-medium"
               >
                 <PlusCircle size={20} /> Salvar Escola
               </button>
@@ -156,7 +183,7 @@ export function GerenciarEscolas() {
           </form>
         </div>
 
-        {/* --- LISTAGEM (TABELA) --- */}
+        {/* --- LISTAGEM --- */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -182,7 +209,8 @@ export function GerenciarEscolas() {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button 
                       onClick={() => handleDelete(escola.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 bg-red-50 p-2 rounded-full transition-colors"
+                      title="Excluir Escola"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -192,7 +220,7 @@ export function GerenciarEscolas() {
             </tbody>
           </table>
           {escolas.length === 0 && (
-            <div className="p-6 text-center text-gray-500">Nenhuma escola cadastrada.</div>
+            <div className="p-10 text-center text-gray-500">Nenhuma escola cadastrada ainda.</div>
           )}
         </div>
       </div>

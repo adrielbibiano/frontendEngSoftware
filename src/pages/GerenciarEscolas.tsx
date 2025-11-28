@@ -25,13 +25,16 @@ export function GerenciarEscolas() {
   // Estados de Dados (Listas)
   const [escolas, setEscolas] = useState<Escola[]>([]);
   const [municipios, setMunicipios] = useState<Municipio[]>([]);
-  const [destinos, setDestinos] = useState<Destino[]>([]); // Novo estado para destinos
+  const [destinos, setDestinos] = useState<Destino[]>([]);
+  
+  // Estado de Carregamento
+  const [loading, setLoading] = useState(false);
   
   // Estados do Formulário
   const [nome, setNome] = useState('');
   const [tipo, setTipo] = useState('Pública');
   const [idMunicipio, setIdMunicipio] = useState('');
-  const [idDestino, setIdDestino] = useState(''); // Novo estado para o select
+  const [idDestino, setIdDestino] = useState('');
 
   // Carregar dados ao abrir a página
   useEffect(() => {
@@ -64,12 +67,15 @@ export function GerenciarEscolas() {
       return;
     }
 
+    // 1. Ativa o bloqueio
+    setLoading(true);
+
     try {
       await api.post('/escolas', {
         nome,
         tipo,
         idMunicipio: Number(idMunicipio),
-        idDestino: Number(idDestino) // Enviando o destino escolhido
+        idDestino: Number(idDestino)
       });
       
       // Limpar formulário
@@ -85,6 +91,9 @@ export function GerenciarEscolas() {
     } catch (error) {
       console.error(error);
       alert('Erro ao cadastrar escola.');
+    } finally {
+      // 2. Libera o bloqueio (seja sucesso ou erro)
+      setLoading(false);
     }
   }
 
@@ -121,6 +130,7 @@ export function GerenciarEscolas() {
                 value={nome}
                 onChange={e => setNome(e.target.value)}
                 placeholder="Ex: Escola Técnica Estadual..."
+                disabled={loading} // Bloqueia digitação enquanto salva
               />
             </div>
 
@@ -131,6 +141,7 @@ export function GerenciarEscolas() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                 value={tipo}
                 onChange={e => setTipo(e.target.value)}
+                disabled={loading}
               >
                 <option value="Pública">Pública</option>
                 <option value="Privada">Privada</option>
@@ -144,6 +155,7 @@ export function GerenciarEscolas() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                 value={idMunicipio}
                 onChange={e => setIdMunicipio(e.target.value)}
+                disabled={loading}
               >
                 <option value="">Selecione...</option>
                 {municipios.map(city => (
@@ -154,13 +166,14 @@ export function GerenciarEscolas() {
               </select>
             </div>
 
-            {/* NOVO: Select Destino do Lixo */}
+            {/* Select Destino do Lixo */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Destino do Lixo</label>
               <select
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                 value={idDestino}
                 onChange={e => setIdDestino(e.target.value)}
+                disabled={loading}
               >
                 <option value="">Selecione...</option>
                 {destinos.map(dest => (
@@ -171,13 +184,24 @@ export function GerenciarEscolas() {
               </select>
             </div>
 
-            {/* Botão Salvar */}
+            {/* Botão Salvar com Loading e Bloqueio */}
             <div className="lg:col-span-5 flex justify-end mt-2">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 flex items-center gap-2 font-medium"
+                disabled={loading}
+                className={`px-6 py-2 rounded flex items-center gap-2 font-medium text-white transition-colors ${
+                  loading 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
-                <PlusCircle size={20} /> Salvar Escola
+                {loading ? (
+                  'Salvando...'
+                ) : (
+                  <>
+                    <PlusCircle size={20} /> Salvar Escola
+                  </>
+                )}
               </button>
             </div>
           </form>

@@ -1,21 +1,19 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
 import './index.css'
-import App from './App'
-import { setupMock } from './api/mock'
+import { BrowserRouter } from 'react-router-dom'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
-// setup axios mock for dev/demo. You can disable mocks by setting
-// VITE_USE_MOCK=false in your .env (or .env.local) when running Vite.
-const useMock = import.meta.env.DEV && (import.meta.env.VITE_USE_MOCK ?? 'true') === 'true'
-if (useMock) {
-  setupMock()
-}
+// Você precisa pegar esse ID no console do Google Cloud (console.cloud.google.com)
+const GOOGLE_CLIENT_ID = "SEU_CLIENT_ID_DO_GOOGLE.apps.googleusercontent.com";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </GoogleOAuthProvider>
+  </React.StrictMode>,
 )

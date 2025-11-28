@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import { GerenciarEscolas } from './pages/GerenciarEscolas' 
 import PrivateRoute from './components/PrivateRoute'
 import './App.css'
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         
         {/* Rotas Protegidas (Só acessa logado) */}
         <Route 

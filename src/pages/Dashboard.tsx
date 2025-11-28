@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import api from '../services/api';
-import { PieChart, BarChart3 } from 'lucide-react';
+import { PieChart, BarChart3, LogOut } from 'lucide-react'; // LogOut importado aqui
+import { useNavigate } from 'react-router-dom';
 
 // Interface para tipagem dos dados
 interface DadosGrafico {
@@ -12,6 +13,13 @@ interface DadosGrafico {
 export default function Dashboard() {
   const [dados, setDados] = useState<DadosGrafico[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // Função de Logout
+  function handleLogout() {
+    localStorage.removeItem('token');
+    navigate('/login');
+  }
 
   // Busca os dados assim que a tela carrega
   useEffect(() => {
@@ -77,14 +85,26 @@ export default function Dashboard() {
     <div className="p-8 bg-gray-900 min-h-screen text-white">
       <div className="max-w-6xl mx-auto">
         
-        {/* Cabeçalho */}
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <PieChart className="text-blue-400" /> 
-          Panorama da Coleta
-        </h1>
-        <p className="text-gray-400 mb-8">
-          Distribuição das escolas por tipo de destino final dos resíduos.
-        </p>
+        {/* Cabeçalho com Flexbox para separar Título e Botão */}
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
+              <PieChart className="text-blue-400" /> 
+              Panorama da Coleta
+            </h1>
+            <p className="text-gray-400">
+              Distribuição das escolas por tipo de destino final dos resíduos.
+            </p>
+          </div>
+
+          {/* O BOTÃO FICOU AQUI AGORA */}
+          <button 
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
+          >
+            <LogOut size={18} /> Sair
+          </button>
+        </div>
 
         {/* Loading ou Conteúdo */}
         {loading ? (

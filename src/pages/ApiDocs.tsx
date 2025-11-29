@@ -1,11 +1,9 @@
-// src/pages/ApiDocs.tsx
-import React from "react";
-
 export default function ApiDocs() {
-  const backend = process.env.REACT_APP_API_URL || "http://localhost:3000";
+  // No Vite, variáveis começam com VITE_
+  const backend = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
   const docsUrl = `${backend.replace(/\/$/, "")}/docs/v1`;
 
-  // fallback: abrir em nova aba se iframe for bloqueado
   const openInNewTab = () => window.open(docsUrl, "_blank", "noopener");
 
   return (
@@ -20,7 +18,14 @@ export default function ApiDocs() {
         </button>
       </div>
 
-      <div style={{ height: "80vh", borderRadius: 6, overflow: "hidden", border: "1px solid #2d3748" }}>
+      <div
+        style={{
+          height: "80vh",
+          borderRadius: 6,
+          overflow: "hidden",
+          border: "1px solid #2d3748",
+        }}
+      >
         <iframe
           src={docsUrl}
           title="API Docs"
@@ -29,8 +34,12 @@ export default function ApiDocs() {
       </div>
 
       <p className="mt-3 text-sm text-gray-300">
-        Se a página não carregar, provavelmente o servidor bloqueia `iframe` (X-Frame-Options). Use
-        <button onClick={openInNewTab} className="ml-1 underline">Abrir em nova aba</button>.
+        Se a página não carregar, o servidor pode estar bloqueando iframe com{" "}
+        <code>X-Frame-Options</code>.  
+        Use
+        <button onClick={openInNewTab} className="ml-1 underline">
+          Abrir em nova aba
+        </button>.
       </p>
     </div>
   );

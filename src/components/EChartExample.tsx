@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import ReactECharts from "echarts-for-react";
-import api from "../api/client";
+import { useEffect, useState } from 'react';
+import ReactECharts from 'echarts-for-react';
+import api from '../api/client';
 
 type Escola = { id: number; nome: string; servicosColeta?: any[] };
 
@@ -17,7 +17,7 @@ export default function EChartExample() {
   useEffect(() => {
     let mounted = true;
     api
-      .get("/escolas")
+      .get('/escolas')
       .then((res) => {
         if (!mounted) return;
         // backend returns an array of escolas; wrap into ChartData shape
@@ -46,15 +46,15 @@ export default function EChartExample() {
     [];
 
   const option = {
-    tooltip: { trigger: "axis" },
-    xAxis: { type: "category", data: labels },
-    yAxis: { type: "value" },
+    tooltip: { trigger: 'axis' },
+    xAxis: { type: 'category', data: labels },
+    yAxis: { type: 'value' },
     series: [
       {
-        name: "Serviços de Coleta",
-        type: "bar",
+        name: 'Serviços de Coleta',
+        type: 'bar',
         data: values,
-        itemStyle: { color: "#5b6cff" },
+        itemStyle: { color: '#5b6cff' },
       },
     ],
   };

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import ReactECharts from "echarts-for-react";
-import api from "../services/api";
-import { PieChart, BarChart3, LogOut } from "lucide-react"; // LogOut importado aqui
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import ReactECharts from 'echarts-for-react';
+import api from '../services/api';
+import { PieChart, BarChart3, LogOut } from 'lucide-react'; // LogOut importado aqui
+import { useNavigate } from 'react-router-dom';
 
 // Interface para tipagem dos dados
 interface DadosGrafico {
@@ -17,18 +17,18 @@ export default function Dashboard() {
 
   // Função de Logout
   function handleLogout() {
-    localStorage.removeItem("token");
-    navigate("/login");
+    localStorage.removeItem('token');
+    navigate('/login');
   }
 
   // Busca os dados assim que a tela carrega
   useEffect(() => {
     async function carregarDados() {
       try {
-        const response = await api.get("/dashboard/stats");
+        const response = await api.get('/dashboard/stats');
         setDados(response.data);
       } catch (error) {
-        console.error("Erro ao carregar dashboard", error);
+        console.error('Erro ao carregar dashboard', error);
       } finally {
         setLoading(false);
       }
@@ -39,38 +39,38 @@ export default function Dashboard() {
   // Configuração do Gráfico (ECharts)
   const option = {
     tooltip: {
-      trigger: "item",
-      formatter: "{b}: {c} ({d}%)",
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)',
     },
     legend: {
-      bottom: "0%",
-      left: "center",
-      icon: "circle",
-      textStyle: { color: "#fff", fontSize: 12 },
-      type: "scroll",
+      bottom: '0%',
+      left: 'center',
+      icon: 'circle',
+      textStyle: { color: '#fff', fontSize: 12 },
+      type: 'scroll',
     },
     series: [
       {
-        name: "Destino do Lixo",
-        type: "pie",
-        radius: ["35%", "60%"],
-        center: ["50%", "45%"],
+        name: 'Destino do Lixo',
+        type: 'pie',
+        radius: ['35%', '60%'],
+        center: ['50%', '45%'],
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 8,
-          borderColor: "#111827",
+          borderColor: '#111827',
           borderWidth: 2,
         },
         label: {
           show: false,
-          position: "center",
+          position: 'center',
         },
         emphasis: {
           label: {
             show: true,
             fontSize: 16,
-            fontWeight: "bold",
-            color: "#fff",
+            fontWeight: 'bold',
+            color: '#fff',
           },
         },
         labelLine: {
@@ -116,7 +116,7 @@ export default function Dashboard() {
             <div className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 flex flex-col justify-center">
               <ReactECharts
                 option={option}
-                style={{ height: "400px", width: "100%" }}
+                style={{ height: '400px', width: '100%' }}
               />
             </div>
 

@@ -1,35 +1,35 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import api from "../services/api";
-import { Lock, Mail, LogIn } from "lucide-react";
-import { GoogleLogin } from "@react-oauth/google"; // <--- Importante
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import api from '../services/api';
+import { Lock, Mail, LogIn } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google'; // <--- Importante
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
   }, [navigate]);
 
   // Função para salvar token e ir pro dashboard
   const handleSuccess = (token: string) => {
-    localStorage.setItem("token", token);
-    navigate("/dashboard");
+    localStorage.setItem('token', token);
+    navigate('/dashboard');
   };
 
   async function handleLocalLogin(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post('/auth/login', { email, password });
       handleSuccess(res.data.accessToken);
-    } catch (err) {
-      setError("Credenciais inválidas.");
+    } catch (_err) {
+      setError('Credenciais inválidas.');
     }
   }
 
@@ -37,12 +37,12 @@ export default function Login() {
   async function handleGoogleSuccess(credentialResponse: any) {
     try {
       // Envia o token do Google pro nosso backend validar
-      const res = await api.post("/auth/google", {
+      const res = await api.post('/auth/google', {
         token: credentialResponse.credential,
       });
       handleSuccess(res.data.accessToken);
-    } catch (err) {
-      setError("Erro ao autenticar com Google.");
+    } catch (_err) {
+      setError('Erro ao autenticar com Google.');
     }
   }
 
@@ -112,14 +112,14 @@ export default function Login() {
         <div className="flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => setError("Falha no Login Google")}
+            onError={() => setError('Falha no Login Google')}
             theme="filled_black"
             shape="circle"
           />
         </div>
 
         <p className="mt-8 text-center text-gray-400">
-          Não tem conta?{" "}
+          Não tem conta?{' '}
           <Link to="/register" className="text-blue-400 hover:underline">
             Cadastre-se
           </Link>

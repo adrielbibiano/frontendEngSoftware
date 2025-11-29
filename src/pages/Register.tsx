@@ -1,28 +1,28 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import api from "../services/api";
-import { Lock, Mail, UserPlus } from "lucide-react";
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import api from '../services/api';
+import { Lock, Mail, UserPlus } from 'lucide-react';
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     if (password !== confirmPass) {
-      setError("As senhas não coincidem.");
+      setError('As senhas não coincidem.');
       return;
     }
 
     try {
-      await api.post("/auth/register", { email, password });
-      alert("Conta criada! Faça login.");
-      navigate("/login");
-    } catch (err) {
-      setError("Erro ao criar conta. Email já em uso?");
+      await api.post('/auth/register', { email, password });
+      alert('Conta criada! Faça login.');
+      navigate('/login');
+    } catch (_err) {
+      setError('Erro ao criar conta. Email já em uso?');
     }
   }
 
@@ -87,7 +87,7 @@ export default function Register() {
         </form>
 
         <p className="mt-6 text-center text-gray-400">
-          Já tem conta?{" "}
+          Já tem conta?{' '}
           <Link to="/login" className="text-blue-400 hover:underline">
             Entrar
           </Link>

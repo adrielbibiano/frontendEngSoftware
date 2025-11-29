@@ -1,7 +1,7 @@
 // src/pages/GerenciarEscolas.tsx
-import { useEffect, useState } from "react";
-import api from "../services/api";
-import { Trash2, PlusCircle, School } from "lucide-react";
+import { useEffect, useState } from 'react';
+import api from '../services/api';
+import { Trash2, PlusCircle, School } from 'lucide-react';
 
 // Definição dos Tipos
 interface Municipio {
@@ -31,10 +31,10 @@ export function GerenciarEscolas() {
   const [loading, setLoading] = useState(false);
 
   // Estados do Formulário
-  const [nome, setNome] = useState("");
-  const [tipo, setTipo] = useState("Pública");
-  const [idMunicipio, setIdMunicipio] = useState("");
-  const [idDestino, setIdDestino] = useState("");
+  const [nome, setNome] = useState('');
+  const [tipo, setTipo] = useState('Pública');
+  const [idMunicipio, setIdMunicipio] = useState('');
+  const [idDestino, setIdDestino] = useState('');
 
   // Carregar dados ao abrir a página
   useEffect(() => {
@@ -45,16 +45,16 @@ export function GerenciarEscolas() {
     try {
       // Busca todas as informações necessárias
       const [resEscolas, resMunicipios, resDestinos] = await Promise.all([
-        api.get("/escolas"),
-        api.get("/municipios"),
-        api.get("/destinos"),
+        api.get('/escolas'),
+        api.get('/municipios'),
+        api.get('/destinos'),
       ]);
 
       setEscolas(resEscolas.data);
       setMunicipios(resMunicipios.data);
       setDestinos(resDestinos.data);
     } catch (error) {
-      console.error("Erro ao carregar dados", error);
+      console.error('Erro ao carregar dados', error);
     }
   }
 
@@ -63,7 +63,7 @@ export function GerenciarEscolas() {
     e.preventDefault();
 
     if (!nome || !idMunicipio || !idDestino) {
-      alert("Preencha todos os campos, incluindo o destino do lixo!");
+      alert('Preencha todos os campos, incluindo o destino do lixo!');
       return;
     }
 
@@ -71,7 +71,7 @@ export function GerenciarEscolas() {
     setLoading(true);
 
     try {
-      await api.post("/escolas", {
+      await api.post('/escolas', {
         nome,
         tipo,
         idMunicipio: Number(idMunicipio),
@@ -79,18 +79,18 @@ export function GerenciarEscolas() {
       });
 
       // Limpar formulário
-      setNome("");
-      setIdMunicipio("");
-      setIdDestino("");
+      setNome('');
+      setIdMunicipio('');
+      setIdDestino('');
 
       // Recarrega a lista para mostrar a nova escola
-      const res = await api.get("/escolas");
+      const res = await api.get('/escolas');
       setEscolas(res.data);
 
-      alert("Escola cadastrada com sucesso!");
+      alert('Escola cadastrada com sucesso!');
     } catch (error) {
       console.error(error);
-      alert("Erro ao cadastrar escola.");
+      alert('Erro ao cadastrar escola.');
     } finally {
       // 2. Libera o bloqueio (seja sucesso ou erro)
       setLoading(false);
@@ -99,12 +99,12 @@ export function GerenciarEscolas() {
 
   // Função de DELETAR (Delete)
   async function handleDelete(id: number) {
-    if (confirm("Tem certeza que deseja excluir esta escola?")) {
+    if (confirm('Tem certeza que deseja excluir esta escola?')) {
       try {
         await api.delete(`/escolas/${id}`);
         setEscolas(escolas.filter((escola) => escola.id !== id));
-      } catch (error) {
-        alert("Erro ao excluir. Pode haver dados vinculados.");
+      } catch (_error) {
+        alert('Erro ao excluir. Pode haver dados vinculados.');
       }
     }
   }
@@ -201,12 +201,12 @@ export function GerenciarEscolas() {
                 disabled={loading}
                 className={`px-6 py-2 rounded flex items-center gap-2 font-medium text-white transition-colors ${
                   loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
                 }`}
               >
                 {loading ? (
-                  "Salvando..."
+                  'Salvando...'
                 ) : (
                   <>
                     <PlusCircle size={20} /> Salvar Escola
@@ -254,9 +254,9 @@ export function GerenciarEscolas() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        escola.tipo === "Pública"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-yellow-100 text-yellow-800"
+                        escola.tipo === 'Pública'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
                       }`}
                     >
                       {escola.tipo}

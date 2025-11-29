@@ -1,12 +1,12 @@
-import { Link, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import { GerenciarEscolas } from "./pages/GerenciarEscolas";
-import PrivateRoute from "./components/PrivateRoute";
-import "./App.css";
-import Register from "./pages/Register";
-import ApiDocs from "./pages/ApiDocs";
+import { Link, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import { GerenciarEscolas } from './pages/GerenciarEscolas';
+import PrivateRoute from './components/PrivateRoute';
+import './App.css';
+import Register from './pages/Register';
+import ApiDocs from './pages/ApiDocs';
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
           Escolas
         </Link>
         <Link to="/docs" className="hover:underline text-blue-400">
-        API Docs
+          API Docs
         </Link>
         <Link to="/login" className="hover:underline text-blue-400">
           Login

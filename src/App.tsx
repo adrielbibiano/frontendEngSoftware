@@ -2,11 +2,11 @@ import { Link, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-// Importe o componente novo que criamos
 import { GerenciarEscolas } from "./pages/GerenciarEscolas";
 import PrivateRoute from "./components/PrivateRoute";
 import "./App.css";
 import Register from "./pages/Register";
+import ApiDocs from "./pages/ApiDocs";
 
 function App() {
   return (
@@ -22,6 +22,9 @@ function App() {
         <Link to="/escolas" className="hover:underline text-blue-400">
           Escolas
         </Link>
+        <Link to="/docs" className="hover:underline text-blue-400">
+        API Docs
+        </Link>
         <Link to="/login" className="hover:underline text-blue-400">
           Login
         </Link>
@@ -31,6 +34,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/docs" element={<ApiDocs />} />
 
         {/* Rotas Protegidas (Só acessa logado) */}
         <Route
